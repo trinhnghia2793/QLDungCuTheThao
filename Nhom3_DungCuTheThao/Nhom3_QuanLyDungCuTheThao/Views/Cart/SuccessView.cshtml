@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "SuccessView";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4;
+        text-align: center;
+        margin: 50px;
+    }
+
+    h2 {
+        color: #28a745;
+    }
+
+    h3 {
+        color: #6c757d;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        color: #fff;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 18px;
+        margin-top: 20px;
+        display: inline-block;
+    }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+</style>
+@using Nhom3_QuanLyDungCuTheThao.Models
+@model user_order
+<h2>Bạn đã thanh toán thành công</h2>
+<h3>Nhấn nút để quay về trang chủ tiếp tục mua hàng</h3>
+<a class="btn btn-success" href="/Home/Index">Quay về cửa hàng</a>
+

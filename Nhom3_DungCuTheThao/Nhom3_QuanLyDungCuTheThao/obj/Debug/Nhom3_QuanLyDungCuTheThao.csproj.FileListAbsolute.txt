@@ -1,0 +1,2 @@
+C:\Users\Admin\Desktop\Lập trình web - Final\Nhom3_DungCuTheThao\Nhom3_QuanLyDungCuTheThao\obj\Debug\Nhom3_QuanLyDungCuTheThao.csproj.AssemblyReference.cache
+C:\Users\Admin\Desktop\Lập trình web - Final\Nhom3_DungCuTheThao\Nhom3_QuanLyDungCuTheThao\obj\Debug\Nhom3_QuanLyDungCuTheThao.csproj.CoreCompileInputs.cache

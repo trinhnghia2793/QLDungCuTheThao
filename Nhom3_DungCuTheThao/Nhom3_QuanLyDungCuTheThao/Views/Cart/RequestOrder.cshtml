@@ -1,0 +1,366 @@
+﻿@{ ViewBag.Title = "RequestOrder";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml"; }
+
+@using Nhom3_QuanLyDungCuTheThao.Models;
+@model IEnumerable<Nhom3_QuanLyDungCuTheThao.Models.InCartProduct>
+<link rel="stylesheet" href="~/Contents/css/themify-icons.css">
+<style>
+    .selec {
+        width: 50%;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .desp{
+      font-size:20px;
+      line-height:25px;
+      text-align:left;
+
+    }
+</style>
+<form id="payment-handle" method="post">
+    @if (Model != null)
+    {
+        var info = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <table class="table">
+                                <thead>
+                                    <tr class="text-center">
+                                        <td colspan="7" class="text-center">
+                                            <h5>XÁC NHẬN ĐƠN HÀNG</h5>
+                                        </td>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="text-center align-middle">
+                                        <td>
+                                            Mã sản phẩm
+                                        </td>
+                                        <td>
+                                            Tên sản phẩm
+                                        </td>
+                                        <td>
+                                            Hình ảnh minh họa
+                                        </td>
+                                        <td>
+                                            Giá sản phẩm
+                                        </td>
+                                        <td>
+                                            Giảm giá
+                                        </td>
+                                        <td>
+                                            Số lượng đặt
+                                        </td>
+                                        <td>
+                                            Thành tiền
+                                        </td>
+                                    </tr>
+                                    @{ foreach (InCartProduct icp in Model)
+                                        {
+                                            <tr class="text-center">
+                                                <td>
+                                                    @icp.Id
+                                                </td>
+                                                <td>
+                                                    @icp.Name
+                                                </td>
+                                                <td>
+                                                    <img style="width: 180px; height: 120px" src="~/Images/@icp.ImgFileName" />
+                                                </td>
+                                                <td>
+                                                    @String.Format(info, "{0:C0}", icp.Price)
+                                                </td>
+                                                <td>
+                                                    @String.Format(info, "{0:C0}", icp.Discount)
+                                                </td>
+                                                <td>
+                                                    <input min="1" name="@icp.Id" class="text-center w-25" type="number" value="@icp.Amount" disabled />
+                                                </td>
+                                                <td>
+                                                    @String.Format(info, "{0:C0}", ((icp.Price - icp.Discount) * icp.Amount));
+                                                </td>
+                                            </tr>
+ } }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+            <div class="row mt-1 pt-3 border-top">
+                <div class="col-7">
+                    <div class="form mt-0">
+                        @if (Session["currentUser"] != null)
+                        {
+                            <div class="form-group">
+                                <label>Họ và tên người mua</label>
+                                <input class="form-control" name="Order_owner_name" type="text" required value="@((Session["currentUser"] as user_account).user_lastname + " " + (Session["currentUser"] as user_account).user_firstname)" />
+                            </div>
+                            <div class="form-group">
+                                <label>Số điện thoại</label>
+                                <input class="form-control" name="Order_owner_phone" type="text" required value="@((Session["currentUser"] as user_account).user_phonenumber)" minlength="10" />
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input class="form-control" name="Order_owner_email" type="email" value="@((Session["currentUser"] as user_account).user_email)" />
+                            </div>
+                            <div class="form-group">
+                                <label>Địa chỉ nhận hàng</label>
+                                <input class="form-control" name="Order_owner_address" required value="@((Session["currentUser"] as user_account).user_address)" />
+                            </div> }
+                        else
+                        {
+                            <div class="form-group">
+                                <label>Họ và tên người mua</label>
+                                <input class="form-control" name="Order_owner_name" type="text" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Số điện thoại</label>
+                                <input class="form-control" name="Order_owner_phone" type="text" required minlength="10" />
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input class="form-control" name="Order_owner_email" type="email" />
+                            </div>
+                            <div class="form-group">
+                                <label>Địa chỉ nhận hàng</label>
+                                <div>
+                                    <select id="city" class="selec">
+                                        <option value="" selected>Chọn tỉnh thành</option>
+                                    </select>
+                                    <br>
+                                    <select id="district" class="selec">
+                                        <option value="" selected>Chọn quận huyện</option>
+                                    </select>
+                                    <br>
+                                    <select id="ward" class="selec">
+                                        <option value="" selected>Chọn phường xã</option>
+                                    </select>
+                                    <br>
+                                </div>
+                                <label>Số nhà</label>
+                                <input class="form-control" id="numberhouse" type="text" />
+                                <input class="form-control" id="result" name="Order_owner_address" hidden />
+                            </div>}
+                    </div>
+            
+                </div>
+                <div class="col-5 d-inline">
+                    <div class="card" style="width: 100%;">
+                        <div class="card-header">
+                            Thanh toán
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <label>
+                                    <input type="radio" name="paymentMethod" checked value="COD" class="p-xl-3" onclick="toggleDescription('COD') " /> Thanh toán khi giao hàng (COD)
+                                    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                         viewBox="0 0 508 508" style="enable-background:new 0 0 508 508; width:2rem" xml:space="preserve">
+<path style="fill:#4CDBC4;" d="M508,21.2C508,9.5,498.5,0,486.8,0H21.2C9.5,0,0,9.5,0,21.2v81h0.1C0.6,91,9.8,82.1,21.2,82.1h465.6
+	c11.4,0,20.6,9,21.1,20.1h0.1L508,21.2z" />
+<path style="fill:#FFFFFF;" d="M474.1,82.1V61.7c-2.2,0-4.3-0.2-6.5-0.7c-12.5-2.9-21.8-14.1-21.8-27.3H62
+	c0,13.2-9.3,24.4-21.7,27.3c-2,0.5-4.2,0.7-6.5,0.7v20.5h440.3V82.1z" />
+<path style="fill:#4CDBC4;" d="M249.9,49.5c-11.2,0-21.7,4.1-30.7,11.5h61.4C271.6,53.6,261.1,49.5,249.9,49.5z" />
+<g>
+                                    <path style="fill:#3DC9AE;" d="M21.2,82.1h12.7V61.7c2.2,0,4.4-0.2,6.5-0.7H21.2C13.5,60.9,6.3,63,0,66.6v36.2
+		C0.2,91.4,9.6,82.1,21.2,82.1z" />
+                                    <path style="fill:#3DC9AE;" d="M486.8,60.9h-19.2c2.1,0.5,4.2,0.7,6.5,0.7v20.5h12.7c10,0,18.4,7,20.6,16.3l0.6,0.3v-32
+		C501.8,63,494.6,60.9,486.8,60.9z" />
+</g>
+<g>
+                                    <path style="fill:#F2F2F2;" d="M298.2,82.1h175.9V61.7c-2.2,0-4.3-0.2-6.5-0.7h-187C287.4,66.3,293.4,73.6,298.2,82.1z" />
+                                    <path style="fill:#F2F2F2;" d="M201.6,82.1c4.8-8.6,10.7-15.9,17.6-21.2H40.4c-2,0.5-4.2,0.7-6.5,0.7v20.5H201.6z" />
+</g>
+<path style="fill:#3DC9AE;" d="M298.2,82.1c-4.9-8.6-10.8-15.9-17.7-21.2h-61.4c-6.9,5.4-12.8,12.7-17.6,21.2H298.2z" />
+<path style="fill:#4CDBC4;" d="M508,102.7c0-11.7-9.5-21.2-21.2-21.2H21.2C9.5,81.4,0,90.9,0,102.7v81h0.1
+	c0.5-11.2,9.7-20.1,21.1-20.1h465.6c11.4,0,20.6,9,21.1,20.1h0.1L508,102.7z" />
+<path style="fill:#FFFFFF;" d="M474.1,163.6v-20.5c-2.2,0-4.3-0.2-6.5-0.7c-12.5-2.9-21.8-14.1-21.8-27.3H62
+	c0,13.2-9.3,24.4-21.7,27.3c-2,0.5-4.2,0.7-6.5,0.7v20.5H474.1z" />
+<path style="fill:#4CDBC4;" d="M249.9,130.9c-11.2,0-21.7,4.1-30.7,11.5h61.4C271.6,135,261.1,130.9,249.9,130.9z" />
+<g>
+                                    <path style="fill:#3DC9AE;" d="M21.2,163.6h12.7v-20.5c2.2,0,4.4-0.2,6.5-0.7H21.2c-7.7,0-14.9,2.1-21.2,5.7v36.2
+		C0.2,172.8,9.6,163.6,21.2,163.6z" />
+                                    <path style="fill:#3DC9AE;" d="M486.8,142.3h-19.2c2.1,0.5,4.2,0.7,6.5,0.7v20.5h12.7c10,0,18.4,7,20.6,16.3l0.6,0.3v-32
+		C501.8,144.5,494.6,142.3,486.8,142.3z" />
+</g>
+<g>
+                                    <path style="fill:#F2F2F2;" d="M298.2,163.6h175.9v-20.5c-2.2,0-4.3-0.2-6.5-0.7h-187C287.4,147.7,293.4,155,298.2,163.6z" />
+                                    <path style="fill:#F2F2F2;" d="M201.6,163.6c4.8-8.6,10.7-15.9,17.6-21.2H40.4c-2,0.5-4.2,0.7-6.5,0.7v20.5H201.6z" />
+</g>
+<path style="fill:#3DC9AE;" d="M298.2,163.6c-4.9-8.6-10.8-15.9-17.7-21.2h-61.4c-6.9,5.4-12.8,12.7-17.6,21.2H298.2z" />
+<path style="fill:#4CDBC4;" d="M486.8,245H21.2C9.5,245,0,254.4,0,266v221c0,11.6,9.5,21,21.2,21h465.6c11.7,0,21.2-9.4,21.2-21V266
+	C508,254.4,498.5,245,486.8,245z" />
+<path style="fill:#FFFFFF;" d="M33.9,446.4V306.5c15.6,0,28.2-12.5,28.2-28h383.8c0,15.5,12.6,28,28.2,28v139.9
+	c-15.6,0-28.2,12.5-28.2,28H62.1C62.1,459,49.5,446.4,33.9,446.4z" />
+<g>
+                                    <ellipse style="fill:#4CDBC4;" cx="136.3" cy="376.5" rx="18.9" ry="18.7" />
+                                    <ellipse style="fill:#4CDBC4;" cx="363.5" cy="376.5" rx="18.9" ry="18.7" />
+                                    <ellipse style="fill:#4CDBC4;" cx="249.9" cy="376.5" rx="60.6" ry="82.1" />
+</g>
+<path style="fill:#FFFFFF;" d="M273.3,377.1c-3.4-4-9.7-7.2-19-9.7v-22.5c3.8,1.6,6.1,4.7,7,9.2l14.7-1.9c-1-5.8-3.4-10.4-7-13.8
+	c-3.7-3.5-8.6-5.5-14.7-6.3v-5.7h-8.4v5.7c-6.7,0.7-12,3.1-16,7.4c-4.1,4.3-6,9.6-6,15.9s1.7,11.5,5.3,15.9
+	c3.6,4.4,9.1,7.7,16.8,9.8v24.2c-2.1-1-4-2.6-5.7-4.9c-1.7-2.2-2.9-4.9-3.5-7.9l-15.2,1.6c1.1,7.6,3.8,13.4,8,17.6s9.7,6.7,16.4,7.4
+	v7.6h8.4v-7.8c7.6-1.1,13.5-4,17.7-8.7c4.2-4.8,6.4-10.6,6.4-17.6C278.4,386.2,276.7,381.1,273.3,377.1z M245.9,364.6
+	c-2.5-1.1-4.4-2.5-5.6-4.2c-1.2-1.8-1.9-3.6-1.9-5.7c0-2.2,0.7-4.3,2-6.1c1.4-1.8,3.2-3.2,5.5-3.9V364.6z M261.4,402
+	c-1.8,2.1-4.2,3.5-7.1,4v-22.5c3.5,1,6,2.5,7.6,4.3c1.5,1.9,2.3,4.1,2.3,6.7C264.1,397.4,263.2,399.9,261.4,402z" />
+<path style="fill:#4CDBC4;" d="M508,184.1c0-11.7-9.5-21.2-21.2-21.2H21.2C9.5,162.9,0,172.4,0,184.1v81h0.1
+	C0.5,254,9.8,245,21.2,245h465.6c11.4,0,20.6,9,21.1,20.1h0.1L508,184.1z" />
+<path style="fill:#FFFFFF;" d="M474.1,245v-20.5c-2.2,0-4.3-0.2-6.5-0.7c-12.5-2.9-21.8-14.1-21.8-27.3H62
+	c0,13.2-9.3,24.4-21.7,27.3c-2,0.5-4.2,0.7-6.5,0.7V245H474.1z" />
+<path style="fill:#4CDBC4;" d="M249.9,212.3c-11.2,0-21.7,4.1-30.7,11.5h61.4C271.6,216.5,261.1,212.3,249.9,212.3z" />
+<g>
+                                    <path style="fill:#3DC9AE;" d="M0,229.5v36.2C0.2,254.3,9.6,245,21.1,245h12.7v-20.5c2.2,0,4.4-0.2,6.5-0.7H21.2
+		C13.5,223.8,6.3,225.9,0,229.5z" />
+                                    <path style="fill:#3DC9AE;" d="M486.8,223.8h-19.2c2.1,0.5,4.2,0.7,6.5,0.7V245h12.7c10,0,18.4,7,20.6,16.3l0.6,0.3v-32
+		C501.8,225.9,494.6,223.8,486.8,223.8z" />
+</g>
+<g>
+                                    <path style="fill:#F2F2F2;" d="M298.2,245h175.9v-20.5c-2.2,0-4.3-0.2-6.5-0.7h-187C287.4,229.1,293.4,236.4,298.2,245z" />
+                                    <path style="fill:#F2F2F2;" d="M201.6,245c4.8-8.6,10.7-15.9,17.6-21.2H40.4c-2,0.5-4.2,0.7-6.5,0.7V245H201.6z" />
+</g>
+<path style="fill:#3DC9AE;" d="M298.2,245c-4.9-8.6-10.8-15.9-17.7-21.2h-61.4c-6.9,5.4-12.8,12.7-17.6,21.2H298.2z" />
+</svg>
+                                    <br />
+                                    <span id="COD" class="d-none desp">
+                                        Bạn chỉ phải thanh toán sau khi nhận được hàng.
+                                        <br /> Được xem hàng, không được thử
+                                    </span>
+                                </label>
+
+                                <br />
+                            
+                                <label>
+                                    <input onclick="toggleDescription('PayPal')" type="radio" name="paymentMethod" value="PayPal" class="p-xl-3" /> Thanh toán qua Ví điện tử PAYPAL
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="1.5rem" preserveAspectRatio="xMidYMid" viewBox="0 0 256 302" id="paypal">
+                                        <path fill="#27346A" d="M217.168 23.507C203.234 7.625 178.046.816 145.823.816h-93.52A13.393 13.393 0 0 0 39.076 12.11L.136 259.077c-.774 4.87 2.997 9.28 7.933 9.28h57.736l14.5-91.971-.45 2.88c1.033-6.501 6.593-11.296 13.177-11.296h27.436c53.898 0 96.101-21.892 108.429-85.221.366-1.873.683-3.696.957-5.477-1.556-.824-1.556-.824 0 0 3.671-23.407-.025-39.34-12.686-53.765"></path>
+                                        <path fill="#27346A" d="M102.397 68.84a11.737 11.737 0 0 1 5.053-1.14h73.318c8.682 0 16.78.565 24.18 1.756a101.6 101.6 0 0 1 6.177 1.182 89.928 89.928 0 0 1 8.59 2.347c3.638 1.215 7.026 2.63 10.14 4.287 3.67-23.416-.026-39.34-12.687-53.765C203.226 7.625 178.046.816 145.823.816H52.295C45.71.816 40.108 5.61 39.076 12.11L.136 259.068c-.774 4.878 2.997 9.282 7.925 9.282h57.744L95.888 77.58a11.717 11.717 0 0 1 6.509-8.74z"></path>
+                                        <path fill="#2790C3" d="M228.897 82.749c-12.328 63.32-54.53 85.221-108.429 85.221H93.024c-6.584 0-12.145 4.795-13.168 11.296L61.817 293.621c-.674 4.262 2.622 8.124 6.934 8.124h48.67a11.71 11.71 0 0 0 11.563-9.88l.474-2.48 9.173-58.136.591-3.213a11.71 11.71 0 0 1 11.562-9.88h7.284c47.147 0 84.064-19.154 94.852-74.55 4.503-23.15 2.173-42.478-9.739-56.054-3.613-4.112-8.1-7.508-13.327-10.28-.283 1.79-.59 3.604-.957 5.477z"></path>
+                                        <path fill="#1F264F" d="M216.952 72.128a89.928 89.928 0 0 0-5.818-1.49 109.904 109.904 0 0 0-6.177-1.174c-7.408-1.199-15.5-1.765-24.19-1.765h-73.309a11.57 11.57 0 0 0-5.053 1.149 11.683 11.683 0 0 0-6.51 8.74l-15.582 98.798-.45 2.88c1.025-6.501 6.585-11.296 13.17-11.296h27.444c53.898 0 96.1-21.892 108.428-85.221.367-1.873.675-3.688.958-5.477-3.122-1.648-6.501-3.072-10.14-4.279a83.26 83.26 0 0 0-2.77-.865"></path>
+                                    </svg>
+                                    <br />
+                                    <span id="PayPal" class="d-none desp">
+                                        Thanh toán nhanh và an toàn qua PAYPAL
+                                    </span>
+
+                                </label>
+
+
+                            </li>
+                        </ul>
+                    </div>
+                    <p>Tổng số lượng hàng: @ViewBag.amount</p>
+                    <p>Tổng thành tiền: @String.Format(info, "{0:C0}", ViewBag.sum)</p>
+
+                    <input id="paymentLink" type="submit"  class="d-none btn btn-success" value="Tiến hành thanh toán">
+                    <input id="submit-order" type="submit" class="btn btn-success d-none" value="Xác nhận đơn hàng" />
+                    <a class="btn btn-danger" href="~/Cart/Index">Hủy</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-7">
+
+                </div>
+                <div class="col-5 d-inline">
+
+                </div>
+            </div>
+        </div>}
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
+<script>
+    function toggleDescription(id) {
+        var element = document.getElementById(id);
+        var submitButton = document.getElementById("submit-order");
+        var paymentLink = document.getElementById("paymentLink");
+        var radioButtons = document.getElementsByName("paymentMethod");
+        var form = document.getElementById("payment-handle");
+
+        for (var i = 0; i < radioButtons.length; i++) {
+            if (radioButtons[i].checked) {
+                if (radioButtons[i].value === id) {
+                    element.classList.remove("d-none");
+                    if (id === "COD") {
+                        submitButton.classList.remove("d-none");
+                        paymentLink.classList.add("d-none");
+                    } else {
+                        submitButton.classList.add("d-none");
+                        paymentLink.classList.remove("d-none");
+                    }
+                }
+            } else {
+                document.getElementById(radioButtons[i].value).classList.add("d-none");
+            }
+        }
+
+        // Set the form action after checking all radio buttons
+        if (id === "COD") {
+            form.setAttribute("action", "/Cart/SubmitOrder");
+        } else {
+            form.setAttribute("action", "/Cart/PaymentWithPaypal");
+        }
+    }
+
+
+    const host = "https://provinces.open-api.vn/api/";
+    var callAPI = (api) => {
+        return axios.get(api)
+            .then((response) => {
+                renderData(response.data, "city");
+            });
+    }
+    callAPI('https://provinces.open-api.vn/api/?depth=1');
+    var callApiDistrict = (api) => {
+        return axios.get(api)
+            .then((response) => {
+                renderData(response.data.districts, "district");
+            });
+    }
+    var callApiWard = (api) => {
+        return axios.get(api)
+            .then((response) => {
+                renderData(response.data.wards, "ward");
+            });
+    }
+
+    var renderData = (array, select) => {
+        let row = ' <option disable value="">Chọn</option>';
+        array.forEach(element => {
+            row += `<option data-id="${element.code}" value="${element.name}">${element.name}</option>`
+        });
+        document.querySelector("#" + select).innerHTML = row
+    }
+
+    $("#city").change(() => {
+        callApiDistrict(host + "p/" + $("#city").find(':selected').data('id') + "?depth=2");
+        printResult();
+    });
+    $("#district").change(() => {
+        callApiWard(host + "d/" + $("#district").find(':selected').data('id') + "?depth=2");
+        printResult();
+    });
+    $("#ward").change(() => {
+        printResult();
+    })
+    $("#numberhouse").change(function () {
+        printResult();
+    });
+
+    $("#city, #district, #ward","#numberhouse").on('change', printResult);
+    var printResult = () => {
+        if ($("#district").find(':selected').data('id') !== "" &&
+            $("#city").find(':selected').data('id') !== "" &&
+            $("#ward").find(':selected').data('id') !== "") {
+            let result =
+                $("#city option:selected").text() +
+                " | " + $("#district option:selected").text() + " | " +
+                $("#ward option:selected").text() + " | " + $("#numberhouse").val();;
+            $("#result").val(result);
+        }
+    }
+</script>

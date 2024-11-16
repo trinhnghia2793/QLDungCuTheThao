@@ -1,0 +1,86 @@
+﻿@using Nhom3_QuanLyDungCuTheThao.Models
+@using System.Linq
+@model IEnumerable<Nhom3_QuanLyDungCuTheThao.Models.product_category>
+
+@{
+    ViewBag.Title = "CategoryList";
+    Layout = "~/Views/Shared/Admin_LayoutPage.cshtml";
+}
+@{ 
+    List<int> counts = ViewBag.countlist;
+    int index = 0;
+}
+<div class="container-fluid m-0 p-0">
+    <div class="row">
+        <div class="col-12 text-center">
+            <h4>DANH SÁCH DANH MỤC SẢN PHẨM</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="container-fluid">
+                <table class="table">
+                    <thead class="bg-light text-center">
+                        <tr>
+                            <th>
+                                Mã danh mục
+                            </th>
+                            <th>
+                                Tên danh mục
+                            </th>
+                            <th>
+                                Số lượng sản phẩm
+                            </th>
+                            <th>
+                                Hành động
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center">
+                                    @Html.DisplayFor(modelItem => item.product_category_id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.product_category_name)
+                                </td>
+                                <td class="text-center">
+                                    @counts[index++]
+                                </td>
+                                <td class="text-center">
+                                    <a class="btn btn-primary" href="~/Admin/ProductList/?id=@item.product_category_id">Danh sách sản phẩm</a>
+                                    <a class="btn btn-success" href="~/Admin/CategoryEdit/?id=@item.product_category_id">Sửa</a>
+                                    <button class="btn btn-danger" onclick="confirmDelete('@item.product_category_id')">Xóa</button>
+                                </td>
+                            </tr>
+                            <tr id="@item.product_category_id" class="border-0 hiddenComp">
+                                <td colspan="4">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-12 text-right">
+                                                <p class="d-inline">Bạn có chắc muốn xóa?</p>
+                                                <a class="btn btn-primary" href="~/Admin/CategoryDelete/?id=@item.product_category_id">Chắc chắn</a>
+                                                <button class="btn btn-secondary" onclick="noDelete('@item.product_category_id')">Không</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmDelete(string) {
+        $('#' + string).removeClass("hiddenComp");
+    }
+    function noDelete(string) {
+        $('#' + string).addClass("hiddenComp");
+    }
+</script>

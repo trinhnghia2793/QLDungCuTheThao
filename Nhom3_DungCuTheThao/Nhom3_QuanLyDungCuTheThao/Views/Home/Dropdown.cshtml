@@ -1,0 +1,15 @@
+﻿@using Nhom3_QuanLyDungCuTheThao.Models;
+@model List<product_category>
+
+@{
+    if (Model != null)
+    {
+        <a class="dropdown-item font-weight-bold" href="~/Product/All">Tất cả</a>
+        foreach (var pc in Model)
+        {
+            <a class="dropdown-item font-weight-bold" href="~/Product/Category/?id=@pc.product_category_id">
+                @pc.product_category_name
+            </a>
+        }
+    }
+}

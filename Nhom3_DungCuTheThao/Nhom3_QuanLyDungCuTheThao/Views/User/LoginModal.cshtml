@@ -1,0 +1,66 @@
+﻿@using Nhom3_QuanLyDungCuTheThao.Models
+@model user_account
+
+<div class="modal fade" role="dialog" data-toggle="modal" id="userLoginModal" aria-labelledby="userLoginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Đăng nhập</h5>
+            </div>
+            <form id="userLoginForm" action="@Url.Action("LoginHandler", "User")" method="post">
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label>Tên đăng nhập</label>
+                                    <input id="login_username" name="user_username" class="form-control" type="text" value="@((Request.Cookies["username"] != null) ? HttpUtility.HtmlEncode(Request.Cookies["username"].Value) : "")" required />
+                                    <p id="validLoginUsername" class="text-danger invisible">Vui lòng nhập tên đăng nhập</p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Mật khẩu</label>
+                                    <input id="login_password" name="user_password" class="form-control" type="password" value="@((Request.Cookies["password"] != null) ? HttpUtility.HtmlEncode(Request.Cookies["password"].Value) : "")" required />
+                                    <p id="validLoginPassword" class="text-danger invisible">Vui lòng nhập mật khẩu</p>
+                                </div>
+                                <div class="form-group form-check">
+                                    @{ var remCookieValue = "";
+                                        if (Request.Cookies["rm"] != null)
+                                        {
+                                            remCookieValue = "true";
+                                        } }
+
+                                    <input id="rem" name="rem" class="form-check-input" type="checkbox" value="true" @(remCookieValue == "true" ? "checked" : "") />
+
+                                    <label for="user_rememberpassword">Ghi nhớ mật khẩu?</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-success" type="submit">Đăng nhập</button>
+                    <button class="btn btn-outline-danger" type="button" data-dismiss="modal">Thoát</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(window).on("load", function () {
+        // Kiểm tra độ dài của trường khi trang được tải
+        checkUsernameLength();
+        
+    });
+    // Thêm sự kiện input để kiểm tra độ dài khi người dùng nhập
+    function checkUsernameLength() {
+        // Lấy giá trị của trường và loại bỏ khoảng trắng ở đầu và cuối
+        var usernameValue = $("#login_username").val().trim();
+        // Kiểm tra giá trị và kiểu dữ liệu có khác trống không
+        if (usernameValue !== "") {
+            $("#validLoginUsername").addClass("invisible");
+        } else {
+            $("#validLoginUsername").removeClass("invisible");
+        }
+    }
+</script>

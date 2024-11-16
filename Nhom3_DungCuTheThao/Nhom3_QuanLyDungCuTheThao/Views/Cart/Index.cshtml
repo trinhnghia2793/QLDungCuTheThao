@@ -1,0 +1,167 @@
+﻿@using Nhom3_QuanLyDungCuTheThao.Models;
+@model IEnumerable<Nhom3_QuanLyDungCuTheThao.Models.InCartProduct>
+
+@{ ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml"; }
+
+<form method="post" action="~/Cart/ChangeProductAmount">
+    @if (Model != null)
+    {
+        var info = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="container-fluid">
+                <div class="row">
+                    <table class="table">
+                        <thead>
+                            <tr class="text-center">
+                                <td colspan="7" class="text-center">
+                                    <h5>DANH SÁCH SẢN PHẨM TRONG GIỎ HÀNG</h5>
+                                </td>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center align-middle">
+                                <td>
+                                    Mã sản phẩm
+                                </td>
+                                <td>
+                                    Tên sản phẩm
+                                </td>
+                                <td>
+                                    Hình ảnh minh họa
+                                </td>
+                                <td>
+                                    Giá sản phẩm
+                                </td>
+                                <td>
+                                    Giảm giá
+                                </td>
+                                <td>
+                                    Số lượng đặt
+                                </td>
+                                <td>
+                                    Thành tiền
+                                </td>
+                            </tr>
+                            @{ foreach (InCartProduct icp in Model)
+                                {
+                <tr class="text-center">
+                    <td>
+                        @icp.Id
+                    </td>
+                    <td>
+                        @icp.Name
+                    </td>
+                    <td>
+                        <img style="width: 180px; height: 120px" src="~/Images/@icp.ImgFileName" />
+                    </td>
+                    <td id="Price-@icp.Id">
+                        @String.Format(info, "{0:C0}", icp.Price)
+                    </td>
+                    <td id="Discount-@icp.Id">
+                        @String.Format(info, "{0:C0}", icp.Discount)
+                    </td>
+                    <td>
+                        <input min="1" max="@icp.MaxAmount" name="@icp.Id" class="text-center w-50" type="number" value="@icp.Amount" id="quantity-@icp.Id" onkeydown="return false;" />
+                    </td>
+                    <td id="Total-@icp.Id">
+                        @String.Format(info, "{0:C0}", ((icp.Price * icp.Amount) - (icp.Price * icp.Discount)));
+                    </td>
+                    <td>
+                        <a class="btn btn-danger" href="~/Cart/DeleteProduct/?id=@icp.Id">Xóa</a>
+                    </td>
+                </tr>
+ } }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-1 pt-3 border-top">
+        <div class="col-7">
+
+        </div>
+        <div class="col-5 d-inline">
+            <p id="total-amount">Tổng số lượng hàng: @ViewBag.amount</p>
+            <p id="total-money">Tổng thành tiền: @String.Format(info, "{0:C0}", ViewBag.sum)</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-7">
+
+        </div>
+        <div class="col-5 d-inline">
+            <button class="btn btn-danger">Hủy giỏ hàng</button>
+            <a id="submitCart" href="javascript:void(0);" class="btn btn-success" onclick="submitAndRedirect()">Tiến hành đặt hàng</a>
+        </div>
+    </div>
+</div>}
+</form>
+@{ 
+    List<InCartProduct> products = Session["cart"] as List<InCartProduct>;
+    if (products == null || products.Count == 0)
+    {
+<script>
+    $("#submitCart").addClass("disabled");
+</script>
+ } 
+    }
+
+
+<script>
+    function submitAndRedirect() {
+        var baseUrl = window.location.origin;
+
+        $.ajax({
+            type: 'POST',
+            url: baseUrl + '/Cart/ChangeProductAmount',
+            data: $('form').serialize(),
+            success: function () {
+                window.location.href = baseUrl + '/Cart/RequestOrder';
+            }
+        });
+    }
+    let quantityInputs = document.querySelectorAll('[id^="quantity-"]');
+    quantityInputs.forEach(input => {
+        input.addEventListener('input', updateTotals);
+    });
+
+    function updateTotals() {
+        let totalQuantity = 0;
+        let totalMoney = 0;
+
+        quantityInputs.forEach(input => {
+            let productId = input.id.split('-')[1];
+
+            let priceElement = document.getElementById(`Price-${productId}`);
+            let discountElement = document.getElementById(`Discount-${productId}`);
+            let quantityElement = input;
+            let totalElement = document.getElementById(`Total-${productId}`);
+
+            let priceValue = parseFloat(priceElement.innerText.replace(/[^\d]/g, ''));
+
+            let discountValue = parseFloat(discountElement.innerText.replace(/[^\d.-]/g, ''));
+            let quantityValue = parseInt(quantityElement.value);
+
+            totalQuantity += quantityValue;
+
+            let totalValue = (priceValue * quantityValue) - (priceValue * discountValue);
+
+            totalElement.innerText = formatCurrency(totalValue);
+
+            totalMoney += totalValue;
+        });
+
+        document.getElementById('total-amount').innerText = `Tổng số lượng hàng: ${totalQuantity}`;
+        document.getElementById('total-money').innerText = `Tổng thành tiền: ${formatCurrency(totalMoney)}`;
+    }
+
+    function formatCurrency(value) {
+        return value.toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&,') + 'đ';
+    }
+
+</script>

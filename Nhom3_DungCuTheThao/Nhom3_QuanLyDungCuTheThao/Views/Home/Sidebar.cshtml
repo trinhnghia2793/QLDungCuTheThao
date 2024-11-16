@@ -1,0 +1,42 @@
+﻿@using Nhom3_QuanLyDungCuTheThao.Models;
+@model List<product_category>
+
+<div class="container-fluid bg-light rounded border p-0">
+    <ul class="list-group">
+        <li class="list-group-item text-center font-weight-bold">
+            DANH MỤC SẢN PHẨM
+        </li>
+        @{
+            if (Model != null)
+            {
+                foreach (var pc in Model)
+                {
+                    <li class="list-group-item">
+                        <a class="text-dark" href="~/Product/Category/?id=@pc.product_category_id">
+                            @pc.product_category_name
+                        </a>
+                    </li>
+                }
+            }
+        }
+
+    </ul>
+</div>
+<div class="container-fluid bg-light rounded mt-3 mb-3 border p-0">
+    <ul class="list-group flex-column">
+        <li class="list-group-item text-center font-weight-bold">
+            LIÊN HỆ CHÚNG TÔI
+        </li>
+        <li class="list-group-item">
+            <span>
+                <i class="fa-solid fa-phone"></i> Hotline: <br />  <br />
+            </span>
+            <span>
+                <i class="fa-solid fa-location-dot"></i> Address: <br /> 140 Lê Trọng Tấn
+            </span>
+            <span>
+                <i class="fa-solid fa-location-dot"></i> Address: <br /> 140 Lê Trọng Tấn
+            </span>
+        </li>
+    </ul>
+</div>

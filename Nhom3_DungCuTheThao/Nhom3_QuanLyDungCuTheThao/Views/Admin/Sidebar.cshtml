@@ -1,0 +1,68 @@
+﻿<div class="container-fluid bg-light rounded border p-0">
+    <ul class="list-group">
+        <li class="list-group-item font-weight-bold">
+            QUẢN LÝ CHUNG
+        </li>
+        <li class="list-group-item">
+            <ul class="list-group font-weight-bold">
+                <li class="list-group-item font-weight-bold">
+                    QUẢN LÝ TÀI KHOẢN NGƯỜI DÙNG
+                </li>
+                <li class="list-group-item">
+                    <i class="fa-regular fa-user"></i>
+                    <a href="~/Admin/UserList">Danh sách tài khoản người dùng</a>
+                </li>
+            </ul>
+        </li>
+        <li class="list-group-item">
+            <ul class="list-group font-weight-bold">
+                <li class="list-group-item font-weight-bold">
+                    QUẢN LÝ ĐƠN HÀNG NGƯỜI DÙNG
+                </li>
+                <li class="list-group-item">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                    <a href="~/Admin/OrderProcess">Đơn hàng chờ xác nhận(@Html.Action("TotalOrderProcess", "Admin"))</a>
+                </li>
+                @*<li class="list-group-item">
+                    <i class="fa-solid fa-check"></i>
+                    <a href="~/Admin/OrderSucceed">Cập nhật giao hàng thành công</a>
+                </li>*@
+                <li class="list-group-item">
+                    <i class="fa-solid fa-check"></i>
+                    <a href="~/Admin/ListOrderSucceed">Các đơn hàng đã giao thành công</a>
+                </li>
+            </ul>
+        </li>
+        <li class="list-group-item">
+            <ul class="list-group font-weight-bold">
+                <li class="list-group-item font-weight-bold">
+                    QUẢN LÝ DANH MỤC SẢN PHẨM
+                </li>
+                <li class="list-group-item">
+                    <i class="fa-solid fa-plus"></i>
+                    <a href="~/Admin/CategoryCreate">Thêm mới danh mục</a>
+                </li>
+                <li class="list-group-item">
+                    <i class="fa-solid fa-list"></i>
+                    <a href="~/Admin/CategoryList">Danh sách danh mục</a>
+                </li>
+            </ul>
+        </li>
+        <li class="list-group-item">
+            <ul class="list-group font-weight-bold">
+                <li class="list-group-item font-weight-bold">
+                    QUẢN LÝ SẢN PHẨM
+                </li>
+                <li class="list-group-item">
+                    <i class="fa-solid fa-plus"></i>
+                    <a href="~/Admin/ProductCreate">Thêm mới sản phẩm</a>
+                </li>
+                <li class="list-group-item">
+                    <i class="fa-solid fa-list"></i>
+                    <a href="~/Admin/ProductList?id=0&&page=0">Danh sách sản phẩm</a>
+                </li>
+            </ul>
+        </li>
+       
+    </ul>
+</div>
